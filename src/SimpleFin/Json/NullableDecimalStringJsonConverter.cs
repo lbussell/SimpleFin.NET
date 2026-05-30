@@ -21,23 +21,7 @@ public sealed class NullableDecimalStringJsonConverter : JsonConverter<decimal?>
         JsonSerializerOptions options
     )
     {
-        if (reader.TokenType == JsonTokenType.Null)
-        {
-            return null;
-        }
-
-        if (reader.TokenType == JsonTokenType.Number)
-        {
-            return reader.GetDecimal();
-        }
-
-        string? value = reader.GetString();
-        if (string.IsNullOrEmpty(value))
-        {
-            return null;
-        }
-
-        return decimal.Parse(value, NumberStyles.Number, CultureInfo.InvariantCulture);
+        return SimpleFinJsonReader.ReadNullableDecimal(ref reader);
     }
 
     /// <inheritdoc />

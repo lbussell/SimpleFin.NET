@@ -148,6 +148,54 @@ public class AccountSetSerializationTests
     }
 
     [TestMethod]
+    public void Deserialize_InvalidDecimalThrowsJsonException()
+    {
+        Assert.ThrowsExactly<JsonException>(() =>
+            Deserialize(
+                """
+                {
+                  "errlist": [],
+                  "connections": [],
+                  "accounts": [
+                    {
+                      "id": "1",
+                      "name": "Checking",
+                      "currency": "USD",
+                      "balance": "not-a-decimal",
+                      "balance-date": 1000
+                    }
+                  ]
+                }
+                """
+            )
+        );
+    }
+
+    [TestMethod]
+    public void Deserialize_InvalidTimestampThrowsJsonException()
+    {
+        Assert.ThrowsExactly<JsonException>(() =>
+            Deserialize(
+                """
+                {
+                  "errlist": [],
+                  "connections": [],
+                  "accounts": [
+                    {
+                      "id": "1",
+                      "name": "Checking",
+                      "currency": "USD",
+                      "balance": "10.00",
+                      "balance-date": "not-a-timestamp"
+                    }
+                  ]
+                }
+                """
+            )
+        );
+    }
+
+    [TestMethod]
     public void Deserialize_DeprecatedErrorsList()
     {
         AccountSet set = Deserialize(

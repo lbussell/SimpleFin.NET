@@ -20,18 +20,7 @@ public sealed class DecimalStringJsonConverter : JsonConverter<decimal>
         JsonSerializerOptions options
     )
     {
-        if (reader.TokenType == JsonTokenType.Number)
-        {
-            return reader.GetDecimal();
-        }
-
-        string? value = reader.GetString();
-        if (string.IsNullOrEmpty(value))
-        {
-            throw new JsonException("Expected a non-empty numeric string for a decimal value.");
-        }
-
-        return decimal.Parse(value, NumberStyles.Number, CultureInfo.InvariantCulture);
+        return SimpleFinJsonReader.ReadDecimal(ref reader);
     }
 
     /// <inheritdoc />

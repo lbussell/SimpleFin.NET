@@ -25,14 +25,7 @@ public sealed class NullableUnixEpochJsonConverter : JsonConverter<DateTimeOffse
             return null;
         }
 
-        long seconds = reader.TokenType switch
-        {
-            JsonTokenType.Number => reader.GetInt64(),
-            JsonTokenType.String => long.Parse(reader.GetString()!),
-            _ => throw new JsonException("Expected a Unix epoch timestamp."),
-        };
-
-        return DateTimeOffset.FromUnixTimeSeconds(seconds);
+        return SimpleFinJsonReader.ReadUnixEpoch(ref reader);
     }
 
     /// <inheritdoc />
