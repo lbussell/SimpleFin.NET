@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2026 Logan Bussell
 // SPDX-License-Identifier: MIT
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using SimpleFin.Models;
 
