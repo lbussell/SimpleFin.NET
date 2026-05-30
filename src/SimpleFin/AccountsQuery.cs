@@ -10,6 +10,8 @@ namespace SimpleFin;
 /// </summary>
 public sealed record AccountsQuery
 {
+    private const string VersionQueryParameter = "version=2";
+
     /// <summary>
     /// If set, transactions are restricted to those on or after this timestamp.
     /// </summary>
@@ -39,10 +41,10 @@ public sealed record AccountsQuery
     /// <summary>
     /// Builds the query string (without a leading <c>?</c>) for this query.
     /// </summary>
-    /// <returns>The encoded query string, or an empty string when no options are set.</returns>
+    /// <returns>The encoded query string.</returns>
     internal string ToQueryString()
     {
-        List<string> parts = [];
+        List<string> parts = [VersionQueryParameter];
 
         if (StartDate is { } start)
         {
@@ -76,4 +78,7 @@ public sealed record AccountsQuery
 
         return string.Join('&', parts);
     }
+
+    internal static string ToQueryString(AccountsQuery? query) =>
+        query?.ToQueryString() ?? VersionQueryParameter;
 }

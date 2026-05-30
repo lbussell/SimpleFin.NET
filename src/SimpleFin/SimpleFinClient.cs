@@ -155,7 +155,7 @@ public sealed class SimpleFinClient
     )
     {
         AccessUrl access = ResolveAccess(accessUrl);
-        string? queryString = query?.ToQueryString();
+        string queryString = AccountsQuery.ToQueryString(query);
         Uri requestUri = BuildUri(access, "accounts", queryString);
 
         using HttpRequestMessage request = new(HttpMethod.Get, requestUri);

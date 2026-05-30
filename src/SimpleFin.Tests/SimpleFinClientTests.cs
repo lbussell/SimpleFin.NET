@@ -78,7 +78,7 @@ public class SimpleFinClientTests
         Assert.AreEqual("Savings", set.Accounts.Single().Name);
         HttpRequestMessage request = handler.Requests.Single();
         Assert.AreEqual(
-            "https://bridge.simplefin.org/simplefin/accounts",
+            "https://bridge.simplefin.org/simplefin/accounts?version=2",
             request.RequestUri!.AbsoluteUri
         );
         Assert.AreEqual("Basic", request.Headers.Authorization!.Scheme);
@@ -107,6 +107,7 @@ public class SimpleFinClientTests
         await client.GetAccountsAsync(query);
 
         string actualQuery = handler.Requests.Single().RequestUri!.Query;
+        StringAssert.Contains(actualQuery, "version=2");
         StringAssert.Contains(actualQuery, "start-date=1000");
         StringAssert.Contains(actualQuery, "end-date=2000");
         StringAssert.Contains(actualQuery, "pending=1");
