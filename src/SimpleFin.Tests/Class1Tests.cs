@@ -3,7 +3,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Classlib.Tests;
+namespace SimpleFin.Tests;
 
 [TestClass]
 public class Class1Tests

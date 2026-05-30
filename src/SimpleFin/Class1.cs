@@ -1,4 +1,4 @@
-﻿namespace Classlib;
+﻿namespace SimpleFin;
 
 /// <summary>
 /// Hello, I am documented!

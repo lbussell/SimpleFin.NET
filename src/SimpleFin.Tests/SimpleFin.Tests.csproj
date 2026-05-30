@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Classlib/Classlib.csproj" />
+    <ProjectReference Include="../SimpleFin/SimpleFin.csproj" />
   </ItemGroup>
 </Project>
