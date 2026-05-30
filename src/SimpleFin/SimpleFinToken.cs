@@ -35,6 +35,36 @@ public readonly record struct SimpleFinToken
     public string Value { get; }
 
     /// <summary>
+    /// Attempts to parse and validate a SimpleFIN Token.
+    /// </summary>
+    /// <param name="value">The raw Base64-encoded token value.</param>
+    /// <param name="result">
+    /// The parsed <see cref="SimpleFinToken"/> when parsing succeeds; otherwise the default value.
+    /// </param>
+    /// <returns><see langword="true"/> when parsing succeeds; otherwise <see langword="false"/>.</returns>
+    public static bool TryParse(string? value, out SimpleFinToken result)
+    {
+        result = default;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        SimpleFinToken token = new(value);
+        try
+        {
+            _ = token.GetClaimUrl();
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
+        result = token;
+        return true;
+    }
+
+    /// <summary>
     /// Decodes the token and returns the one-time-use claim URL it contains.
     /// </summary>
     /// <returns>The HTTPS claim URL to POST to in order to obtain an Access URL.</returns>

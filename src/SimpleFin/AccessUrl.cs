@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2026 Logan Bussell
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace SimpleFin;
 
 /// <summary>
@@ -54,54 +56,30 @@ public sealed record AccessUrl
     /// </exception>
     public static AccessUrl Parse(string accessUrl)
     {
-        if (string.IsNullOrWhiteSpace(accessUrl))
+        if (!TryParse(accessUrl, out AccessUrl? result, out string error))
         {
-            throw new ArgumentException("Access URL must not be empty.", nameof(accessUrl));
+            if (string.IsNullOrWhiteSpace(accessUrl))
+            {
+                throw new ArgumentException(error, nameof(accessUrl));
+            }
+
+            throw new FormatException(error);
         }
 
-        string trimmed = accessUrl.Trim();
-
-        int schemeIndex = trimmed.IndexOf("://", StringComparison.Ordinal);
-        if (schemeIndex < 0)
-        {
-            throw new FormatException("The Access URL is not an absolute URL.");
-        }
-
-        string scheme = trimmed[..schemeIndex];
-        string rest = trimmed[(schemeIndex + 3)..];
-
-        // Credentials, when present, live in the authority (before the first path '/').
-        int pathIndex = rest.IndexOf('/');
-        string authority = pathIndex < 0 ? rest : rest[..pathIndex];
-        string remainder = pathIndex < 0 ? string.Empty : rest[pathIndex..];
-
-        string username = string.Empty;
-        string password = string.Empty;
-        int atIndex = authority.LastIndexOf('@');
-        if (atIndex >= 0)
-        {
-            string userInfo = authority[..atIndex];
-            authority = authority[(atIndex + 1)..];
-
-            string[] parts = userInfo.Split(':', 2);
-            username = Uri.UnescapeDataString(parts[0]);
-            password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
-        }
-
-        if (
-            !Uri.TryCreate($"{scheme}://{authority}{remainder}", UriKind.Absolute, out Uri? baseUrl)
-        )
-        {
-            throw new FormatException("The Access URL is not an absolute URL.");
-        }
-
-        if (baseUrl.Scheme != Uri.UriSchemeHttps)
-        {
-            throw new FormatException("The Access URL must use HTTPS.");
-        }
-
-        return new AccessUrl(baseUrl, username, password);
+        return result;
     }
+
+    /// <summary>
+    /// Attempts to parse a full Access URL string of the form
+    /// <c>https://username:password@host/simplefin</c> into an <see cref="AccessUrl"/>.
+    /// </summary>
+    /// <param name="accessUrl">The Access URL string to parse.</param>
+    /// <param name="result">
+    /// The parsed <see cref="AccessUrl"/> when parsing succeeds; otherwise <see langword="null"/>.
+    /// </param>
+    /// <returns><see langword="true"/> when parsing succeeds; otherwise <see langword="false"/>.</returns>
+    public static bool TryParse(string? accessUrl, [NotNullWhen(true)] out AccessUrl? result) =>
+        TryParse(accessUrl, out result, out _);
 
     /// <summary>
     /// Returns the full Access URL string, including embedded Basic Auth credentials, suitable
@@ -115,6 +93,47 @@ public sealed record AccessUrl
             UserName = Uri.EscapeDataString(Username),
             Password = Uri.EscapeDataString(Password),
         };
-        return builder.Uri.ToString();
+        return builder.Uri.AbsoluteUri;
+    }
+
+    private static bool TryParse(
+        string? accessUrl,
+        [NotNullWhen(true)] out AccessUrl? result,
+        out string error
+    )
+    {
+        result = null;
+
+        if (string.IsNullOrWhiteSpace(accessUrl))
+        {
+            error = "Access URL must not be empty.";
+            return false;
+        }
+
+        if (!Uri.TryCreate(accessUrl.Trim(), UriKind.Absolute, out Uri? uri))
+        {
+            error = "The Access URL is not an absolute URL.";
+            return false;
+        }
+
+        if (uri.Scheme != Uri.UriSchemeHttps)
+        {
+            error = "The Access URL must use HTTPS.";
+            return false;
+        }
+
+        string username = string.Empty;
+        string password = string.Empty;
+        if (!string.IsNullOrEmpty(uri.UserInfo))
+        {
+            string[] parts = uri.UserInfo.Split(':', 2);
+            username = Uri.UnescapeDataString(parts[0]);
+            password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+        }
+
+        UriBuilder builder = new(uri) { UserName = string.Empty, Password = string.Empty };
+        result = new AccessUrl(builder.Uri, username, password);
+        error = string.Empty;
+        return true;
     }
 }

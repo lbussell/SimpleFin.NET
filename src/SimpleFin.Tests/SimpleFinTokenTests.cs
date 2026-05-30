@@ -52,6 +52,36 @@ public class SimpleFinTokenTests
     }
 
     [TestMethod]
+    public void TryParse_ReturnsTokenWhenValid()
+    {
+        bool parsed = SimpleFinToken.TryParse(EncodeToken(ClaimUrl), out SimpleFinToken token);
+
+        Assert.IsTrue(parsed);
+        Assert.AreEqual(ClaimUrl, token.GetClaimUrl().AbsoluteUri);
+    }
+
+    [TestMethod]
+    public void TryParse_ReturnsFalseWhenInvalid()
+    {
+        bool parsed = SimpleFinToken.TryParse("not-valid-base64!!!", out SimpleFinToken token);
+
+        Assert.IsFalse(parsed);
+        Assert.AreEqual(default, token);
+    }
+
+    [TestMethod]
+    public void TryParse_ReturnsFalseWhenDecodedUrlIsNotHttps()
+    {
+        bool parsed = SimpleFinToken.TryParse(
+            EncodeToken("http://insecure.example.com/claim"),
+            out SimpleFinToken token
+        );
+
+        Assert.IsFalse(parsed);
+        Assert.AreEqual(default, token);
+    }
+
+    [TestMethod]
     public void GetClaimUrl_ThrowsOnInvalidBase64()
     {
         SimpleFinToken token = new("not-valid-base64!!!");
