@@ -1,9 +1,13 @@
 name: Docs
 
 on:
-  push:
-    branches: [main]
+  # Publish the docs site after a NuGet release completes successfully
+  workflow_run:
+    workflows: ["Publish NuGet Package"]
+    types: [completed]
+  # Build (but do not deploy) on pull requests to validate the docs
   pull_request:
+  # Allow manually publishing the docs site
   workflow_dispatch:
 
 # Allow only one concurrent deployment, skipping runs queued between the run
@@ -43,8 +47,11 @@ jobs:
           path: _site
 
   deploy:
-    # Only deploy from the default branch, not on pull requests
-    if: github.ref == 'refs/heads/main'
+    # Only deploy after a successful NuGet release, or when manually dispatched.
+    # Pull request runs build the docs for validation but never deploy.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     needs: build
     permissions:
       pages: write
