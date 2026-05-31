@@ -8,11 +8,11 @@
 
   <PropertyGroup Label="Package Metadata">
     <PackageId>SimpleFin</PackageId>
-    <Description>A .NET client library for the SimpleFIN protocol (https://www.simplefin.org). Claim Access URLs from SimpleFIN Tokens and retrieve read-only account and transaction data. AOT- and trim-friendly.</Description>
+    <Description>.NET client library for the SimpleFIN protocol (https://www.simplefin.org).</Description>
     <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageProjectUrl>https://github.com/lbussell/SimpleFin.NET</PackageProjectUrl>
+    <PackageProjectUrl>https://loganbussell.com/SimpleFin.NET/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lbussell/SimpleFin.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
