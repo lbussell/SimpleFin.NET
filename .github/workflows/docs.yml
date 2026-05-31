@@ -1,0 +1,60 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the run
+# in-progress and latest queued. Do not cancel in-progress runs.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout/releases/tag/v6.0.1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      # https://github.com/actions/setup-dotnet/releases/tag/v5.0.1
+      - uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602
+        name: Install .NET
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Build docs
+        run: dotnet docfx docs/docfx.json
+
+      # https://github.com/actions/upload-pages-artifact/releases/tag/v5.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        name: Upload Pages artifact
+        with:
+          path: _site
+
+  deploy:
+    # Only deploy from the default branch, not on pull requests
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/deploy-pages/releases/tag/v5.0.0
+      - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+        name: Deploy to GitHub Pages
+        id: deployment
