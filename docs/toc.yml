@@ -1,4 +1,6 @@
 - name: API
   href: api/
+- name: NuGet
+  href: https://www.nuget.org/packages/SimpleFin.NET
 - name: GitHub
   href: https://github.com/lbussell/SimpleFin.NET

@@ -71,8 +71,8 @@ static async Task CreateEnvironmentAsync(string owner, string repo)
 {
     AnsiConsole.WriteLine();
     AnsiConsole.MarkupLine("[bold]Creating [green]production[/] GitHub environment[/]");
-    await Shell($"gh api --method PUT repos/{owner}/{repo}/environments/production")
-        .Confirm().RunAsync();
+    // await Shell($"gh api --method PUT repos/{owner}/{repo}/environments/production")
+    //     .Confirm().RunAsync();
     Prompt.Success("Environment [green]production[/] created.");
 }
 
@@ -81,10 +81,10 @@ static async Task SetNugetUserSecretAsync(string owner, string repo)
     AnsiConsole.WriteLine();
     AnsiConsole.MarkupLine("[bold]Set the [green]NUGET_USER[/] environment secret[/]");
 
-    var nugetUser = Prompt.Ask("Enter your [green]NuGet.org username[/]:");
+    // var nugetUser = Prompt.Ask("Enter your [green]NuGet.org username[/]:");
 
-    await Shell($"gh secret set NUGET_USER --env production --repo {owner}/{repo}")
-        .WithStandardInput(nugetUser).Confirm().RunAsync();
+    // await Shell($"gh secret set NUGET_USER --env production --repo {owner}/{repo}")
+    //     .WithStandardInput(nugetUser).Confirm().RunAsync();
 
     Prompt.Success("Secret [green]NUGET_USER[/] set.");
 }

@@ -2,16 +2,16 @@
 _layout: landing
 ---
 
-# Documentation for SimpleFIN.NET
+# Documentation for SimpleFin.NET
 
-SimpleFIN.NET is a client library for the [SimpleFIN protocol].
+SimpleFin.NET is a client library for the [SimpleFIN protocol].
 
 ## Installation
 
-Add the NuGet package to your project.
+Add the [NuGet package] to your project.
 
 ```shell
-dotnet add package SimpleFIN.NET
+dotnet add package SimpleFin.NET
 ```
 
 ## Quick start
@@ -56,7 +56,8 @@ is intended for hobby use only.
 
 ## License
 
-SimpleFIN.NET is licensed under the MIT license.
+SimpleFin.NET is licensed under the MIT license.
 
 [SimpleFIN Developer Guide]: https://beta-bridge.simplefin.org/info/developers
 [SimpleFIN protocol]: https://www.simplefin.org/protocol.html
+[NuGet package]: https://www.nuget.org/packages/SimpleFin.NET

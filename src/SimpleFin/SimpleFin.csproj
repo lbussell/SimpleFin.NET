@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Package Metadata">
-    <PackageId>SimpleFIN.NET</PackageId>
+    <PackageId>SimpleFin.NET</PackageId>
     <Description>.NET client library for the SimpleFIN protocol (https://www.simplefin.org).</Description>
     <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
